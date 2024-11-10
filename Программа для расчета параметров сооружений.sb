@@ -1,0 +1,223 @@
+'Программа для расчета параметров ригеля и проверки его на прочность 
+
+TextWindow.BackgroundColor="blue"
+TextWindow.Clear()
+TextWindow.ForegroundColor="white"
+
+' начало программы
+
+TextWindow.Title = "Расчет элементов искусственых сооружений"
+
+TextWindow.WriteLine("----------------------------------------Ввод исходных данных.-------------------------------------------------")
+TextWindow.WriteLine("")
+
+TextWindow.Write("Введите название объекта: ")
+nazvanie=TextWindow.Read()
+
+date = Clock.Date
+weekday = Clock.WeekDay
+Time = Clock.Time
+display = ("Дата расчета: " + date + ", " + "день недели расчета: " + weekday + ", " + "время начала расчета: " + Time)
+TextWindow.WriteLine("" + display)
+
+' nazvanie - переменная, которая будет выводить в конце название объекта
+
+TextWindow.Write("Введите габарит сооружения: Г- ")
+gabarit=TextWindow.ReadNumber()
+
+TextWindow.Write("Введите количество пролетных строений: ")
+n = TextWindow.ReadNumber()
+
+For nprolstr = 1 To n  
+TextWindow.Write("Введите длину пролетного строения № " + nprolstr + ": ")
+dlinaprolstr[nprolstr] = TextWindow.ReadNumber()
+Ltotal = Ltotal + dlinaprolstr[nprolstr]
+EndFor
+
+For nprolstr = 1 To n
+  TextWindow.WriteLine("Длина пролетного строения № " + nprolstr + ": " + dlinaprolstr[nprolstr] + "м.")
+EndFor
+
+' это цикл для записи схемы сооружения
+
+resultString = dlinaprolstr[1]
+For i = 2 To n
+  resultString  = resultString  + " + " + dlinaprolstr[i]
+EndFor
+
+' gabarit - переменная, от которой будет строиться весь поперечник и в дальнейшем ригель
+
+TextWindow.WriteLine("Введите тип ограждения: ")
+TextWindow.WriteLine("1 - барьерное металлическое ограждение")
+TextWindow.WriteLine("2 - парапетное бетонное ограждение")
+ograzdenie = TextWindow.ReadNumber()
+
+If ograzdenie = 1 Then
+  shirinaograzdenie = 0.41
+Else
+  shirinaograzdenie = 0.48
+EndIf
+
+' ograzdenie - переменная, отвечающая за тип ограждения
+
+TextWindow.WriteLine("Имеются ли на сооружении тротуары или служебные проходы: ")
+TextWindow.WriteLine("1 - да")
+TextWindow.WriteLine("2 - нет")
+trotuari=TextWindow.ReadNumber()
+
+If trotuari = 1 Then
+  TextWindow.WriteLine("Это тротуары или служебные проходы?")
+  TextWindow.WriteLine("1 - тротуары")
+  TextWindow.WriteLine("2 - служебные проходы")
+  trotuar = TextWindow.ReadNumber()
+    If trotuar = 1 Then
+      TextWindow.WriteLine("Введите ширину тротуара: ")
+      shirinatrotuari = TextWindow.ReadNumber()
+    Else
+      shirinatrotuari = 0.75
+    EndIf
+Else
+  shirinatrotuari = 0
+EndIf
+
+' trotuari - переменная, отвечающая за наличие или отсутствие тротуаров или служебных проходов
+
+TextWindow.WriteLine("Имеются ли на пролетном строении карнизные блоки или консоли: ")
+TextWindow.WriteLine("1 - да")
+TextWindow.WriteLine("2 - нет")
+consol=TextWindow.ReadNumber()
+
+If consol=1 Then
+  TextWindow.WriteLine("Введите ширину карнизного блока или консоли: ")
+  shirinaconsoli=TextWindow.ReadNumber()
+  shirinaproleta=(gabarit+2*shirinaograzdenie+2*shirinatrotuari+2*shirinaconsoli)
+Else
+  shirinaconsoli=0
+  shirinabort=0.25
+  shirinaproleta=(gabarit+2*shirinaograzdenie+2*shirinatrotuari+2*shirinabort)
+EndIf
+
+TextWindow.WriteLine("-------------------------------------Конец ввода исходных данных-----------------------------------------------")
+TextWindow.WriteLine(" ")
+TextWindow.WriteLine(" ")
+
+' consol - переменная, отвечающая за наличие или отсутствие карнизных блоков или консолей на пролетном строении
+' nbalok - переменная, отвечающая за количество балок в пролетном строении
+' shagbalok - переменная, отвечающая за шаг балок, зависящая от типа и марки балок в пролетном строении
+' shirinaproleta -   переменная, характеризующая ширину пролета при наличии карнизного блока
+' shirinaproleta1 -   переменная, характеризующая ширину пролета без карнизных блоков (для расчета количества балок)
+
+TextWindow.WriteLine("------------------------------Расчет количества балок в пролетном строении--------------------------------------")
+
+shirinabalki = 1.4
+
+TextWindow.Write("Введите максимальное и минимальное расстояние между балками: ")
+min = TextWindow.ReadNumber()
+max = TextWindow.ReadNumber()
+TextWindow.WriteLine("Минимальный шаг балок:  " + min + "м.")
+TextWindow.WriteLine("Максимальный шаг балок: " + max + "м.")
+
+shagbalok1 = (min + max) / 2
+nbalok1 = Math.Round((gabarit + shirinaograzdenie) / shagbalok1) 
+shirinaomon2 = ((gabarit + shirinaograzdenie) - (nbalok1 * shirinabalki)) / (nbalok1 + 1)
+nbalok2 = Math.Round(((shirinatrotuari + 0.5 * shirinaograzdenie + shirinabort) / shagbalok1))
+shirinaomon3 = ((shirinatrotuari + 0.5 * shirinaograzdenie + shirinabort) - (nbalok2 * shirinabalki)) / (nbalok2 - 1)
+nbalok = nbalok1 + 2 * nbalok2
+
+dlinabalki = dlinaprolstr
+dlinapliti = dlinabalki - 0.7 - 0.7
+defshov = 0.05
+visotashva = 0.18
+obembalki = 10.114
+nshvov1 = nbalok1 + 1
+nshvov2 = nbalok2 - 1
+nshvov = nshvov1 + 2 * nshvov2
+monolituch = (shirinaomon2 + shirinaomon3) / 2
+obembalok = nbalok * obembalki
+uchomonolich = nshvov * dlinabalki * monolituch * visotashva
+Lprolstr = Ltotal + (n + 1) * defshov
+
+Program.Delay(1000)
+Sound.PlayChime()
+
+TextWindow.WriteLine("Результаты расчетов ригеля по объекту:        "   + nazvanie)
+TextWindow.WriteLine("Полная длина пролетных строений:              "   + Lprolstr + "м.")
+TextWindow.WriteLine("Схема сооружения:                             "   + resultString)
+TextWindow.WriteLine("Ширина пролетного строения:                   "   + shirinaproleta + "м.")
+TextWindow.WriteLine("Количество балок под п.ч.:                    "   + nbalok1 + "шт.")
+TextWindow.WriteLine("Количество балок под тротуарами:              "   + 2 * nbalok2 + "шт.")
+TextWindow.WriteLine("Общее количество балок в пролетном строении:  "   + nbalok + "шт.")
+TextWindow.WriteLine("Длина балок пролетных строений № "+ nprolstr +":" + dlinabalki + "м.")
+TextWindow.WriteLine("Объем балок:                                  "   + obembalok +"м3")
+TextWindow.WriteLine("Ширина монолитных участков под п.ч.:          "   + shirinaomon2 + "м.")
+TextWindow.WriteLine("Ширина монолитных участков под тротуарами:    "   + shirinaomon3 + "м.")
+TextWindow.WriteLine("Средняя ширина монолитных участков:           "   + monolituch + "м.")
+TextWindow.WriteLine("Количесвто монолитных участков под п.ч.:      "   + nshvov1 + "шт.")
+TextWindow.WriteLine("Количесвто монолитных участков под тротуарами:"   + 2 * nshvov2 + "шт.")
+TextWindow.WriteLine("Общее количесвто монолитных участков:         "   + nshvov + "шт.")
+TextWindow.WriteLine("Объем бетона средних участков омоноличивания: "   + uchomonolich +"м3")
+
+TextWindow.WriteLine("--------------------------Конец расчета исходных данных----------------------------------------------------------")
+TextWindow.WriteLine(" ")
+TextWindow.WriteLine(" ")
+TextWindow.WriteLine("-----------------------------Расчет параметров опор--------------------------------------------------------------")
+TextWindow.WriteLine(" ")
+TextWindow.WriteLine(" ")
+
+nopor = n + 1
+shkafstenka = 0.3
+
+If dlinabalki <= 27 Then  
+  osopiraniya = 0.3
+  shiroporchast = 0.2
+  shirinaopchastifasad = 0.4
+  visotaopchasti = 0.052
+  visotarigel = 0.80
+  fasadrigel = ((shiroporchast / 2) + 0.15 + 0.15) + (osopiraniya + defshov + shkafstenka)
+  dstoiki = 0.8
+Else
+  osopiraniya = 0.4
+  shiroporchast = 0.3
+  shirinaopchastifasad = 0.4
+  visotaopchasti = 0.078
+  visotarigel = 1.00
+  fasadrigel=((shiroporchast/2)+0.15+0.25)+(osopiraniya+defshov+shkafstenka)
+  dstoiki = 1.00
+EndIf
+
+shirinarigel = shirinaproleta
+For shagstoiki=3.0 to 5.0 step 0.5
+  nstoiki1=shirinarigel/shagstoiki
+  nstoiki=Math.Round(nstoiki1)
+EndFor
+
+TextWindow.WriteLine("Выберите сечене стойки опоры: ")
+TextWindow.WriteLine("1 - круг")
+TextWindow.WriteLine("2 - квадрат")
+tipstoyka=TextWindow.ReadNumber()
+
+Lstoiki = 8.0
+If tipstoyka = 1 Then
+    Sstoiki = (Math.Pi * Math.Power(dstoiki,2)) / 4
+    Vstoiki = Sstoiki * Lstoiki * nstoiki
+EndIf
+  
+If fasadrigel < 1.1 Then
+  fasadrigel = dstoiki + 0.15 + 0.15
+EndIf
+Vrigel=(visotarigel*shirinarigel*fasadrigel)+0.5*(shirinarigel-shkafstenka)*(0.1*(shirinarigel-shkafstenka))
+Vrigelobsh=Vrigel*nopor
+
+Program.Delay(1000)
+Sound.PlayChime()
+
+TextWindow.WriteLine("Количество опор:                             " + nopor + "шт.")
+TextWindow.WriteLine("Ширина насадки (ригеля):                     " + shirinarigel + "м.")
+TextWindow.WriteLine("Ширина насадки (ригеля) по фасаду:           " + fasadrigel + "м.")
+TextWindow.WriteLine("Высота насадки (ригеля):                     " + visotarigel + "м.")
+TextWindow.WriteLine("Объем насадки (ригеля):                      " + Vrigel + "м3")
+TextWindow.WriteLine("Общий объем насадок (ригелей):               " + Vrigelobsh + "м3")
+TextWindow.WriteLine("Диаметр стойки:                              " + dstoiki + "м.")
+TextWindow.WriteLine("Кол-во стоек:                                " + nstoiki + "шт.")
+TextWindow.WriteLine("Шаг стоек:                                   " + shagstoiki + "м.")
+TextWindow.WriteLine("Объем стоек опоры:                           " + Vstoiki + "м3")

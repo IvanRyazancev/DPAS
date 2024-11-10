@@ -1,0 +1,10 @@
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\bin\Debug\DPAS_1.exe.config
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\bin\Debug\DPAS_1.exe
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\bin\Debug\DPAS_1.pdb
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.csprojAssemblyReference.cache
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.Form1.resources
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.Properties.Resources.resources
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.csproj.GenerateResource.cache
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.csproj.CoreCompileInputs.cache
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.exe
+C:\Users\iteris\Desktop\DPAS\DPAS_C#\DPAS_1\DPAS_1\obj\Debug\DPAS_1.pdb
