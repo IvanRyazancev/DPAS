@@ -7,7 +7,7 @@ import math
 
 print(" ")
 print("                      Программа для определения параметров искусственного сооружения (ОПИС)    ")
-# print("                         Determining the Parameters of an Artificial Structure (DPAS)          ")
+print("                         Determining the Parameters of an Artificial Structure (DPAS)          ")
 #print(" ")
 print("Данная программа предназначена для определения основных параметров искусственных сооружений дорожного ")
 print("                           хозяйства, имея минимальное количество исходных данных")
